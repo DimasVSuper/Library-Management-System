@@ -330,14 +330,4 @@ php artisan migrate:refresh
 php artisan migrate:fresh
 ```
 
----
-
-## 📝 License
-
-MIT License - Bebas digunakan untuk keperluan apapun
-
----
-
-## 👨‍💻 Author
-
-Developed with ❤️ for modern library management
+t
