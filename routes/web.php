@@ -23,4 +23,8 @@ Route::middleware(['auth'])->group(function () {
     
     // Member Management Routes
     Route::resource('user', \App\Http\Controllers\UserController::class);
+    
+    // Borrowing Management Routes
+    Route::resource('borrowing', \App\Http\Controllers\BorrowingController::class);
+    Route::put('borrowing/{borrowing}/return', [\App\Http\Controllers\BorrowingController::class, 'return'])->name('borrowing.return');
 });

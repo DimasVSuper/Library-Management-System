@@ -35,11 +35,11 @@
 
             <!-- Peminjaman -->
             <li>
-                <a href="#" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition duration-200">
+                <a href="{{ route('borrowing.index') }}" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition duration-200">
                     <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5-7h-2v-2h2v2zm0-4h-2v-2h2v2zm0 8h-2v-2h2v2zm-4-4h-2v-2h2v2zm0 4h-2v-2h2v2zm0-8h-2v-2h2v2zm8 4h-2v-2h2v2zm0 4h-2v-2h2v2zm0-8h-2v-2h2v2z"/>
                     </svg>
-                    <span>Peminjaman</span>
+                    <span>Manajemen Peminjaman</span>
                 </a>
             </li>
         </ul>
