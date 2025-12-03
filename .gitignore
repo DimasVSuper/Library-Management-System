@@ -1,0 +1,101 @@
+# Environment variables
+.env
+.env.backup
+.env.production
+.env.local
+.env.*.local
+
+# IDE & Editor
+.vscode/
+.idea/
+.fleet/
+.nova/
+.phpactor.json
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+storage/logs/
+
+# Dependencies
+/node_modules
+/vendor
+composer.lock
+package-lock.json
+yarn.lock
+
+# Build & Public
+/public/build
+/public/hot
+/public/storage
+/public/css/
+/public/js/
+
+# Laravel specific
+/bootstrap/cache/
+/storage/app/
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/testing/
+/storage/framework/views/
+/storage/logs/
+/storage/pail
+/storage/*.key
+/.phpunit.cache
+.phpunit.result.cache
+
+# Git & VCS
+.git/
+.gitattributes
+.gitkeep
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Vagrant
+Homestead.json
+Homestead.yaml
+vagrant/
+
+# Deployment
+/deploy.lock
+.deployignore
+
+# Testing & Coverage
+/coverage/
+.coverage
+*.coverage
+
+# Config & Auth
+/auth.json
+/config/app.php.example
+
+# Misc
+.env.dusk.local
+.env.testing
+*.pem
+*.pub
+.rnd
