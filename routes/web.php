@@ -17,4 +17,10 @@ Route::middleware(['auth'])->group(function () {
         return view('admin.dashboard');
     })->name('Dashboard');
     Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+    
+    // Book Management Routes
+    Route::resource('books', \App\Http\Controllers\BookController::class);
+    
+    // Member Management Routes
+    Route::resource('user', \App\Http\Controllers\UserController::class);
 });

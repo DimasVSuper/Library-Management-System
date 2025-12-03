@@ -7,8 +7,6 @@ Register
 
 Logout
 
-Forgot password
-
 ✅ 2. Dashboard
 
 Statistik cepat (jumlah buku, anggota, peminjaman aktif)
