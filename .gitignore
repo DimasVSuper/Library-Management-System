@@ -39,6 +39,7 @@ storage/logs/
 composer.lock
 package-lock.json
 yarn.lock
+/tests
 
 # Build & Public
 /public/build
@@ -85,9 +86,12 @@ vagrant/
 .deployignore
 
 # Testing & Coverage
+/tests/
 /coverage/
 .coverage
 *.coverage
+.phpunit.result.cache
+phpunit.xml.backup
 
 # Config & Auth
 /auth.json
@@ -99,3 +103,4 @@ vagrant/
 *.pem
 *.pub
 .rnd
+
