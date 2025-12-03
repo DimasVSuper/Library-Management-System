@@ -23,7 +23,7 @@ class LoginController extends Controller
         // Proses autentikasi
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('Dashboard'));
+            return redirect()->route('Dashboard');
         }
 
         // Jika gagal
@@ -37,6 +37,6 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/beranda'); // or use redirect()->route('login') if you have a named route
+        return redirect()->route('login');
     }
 }

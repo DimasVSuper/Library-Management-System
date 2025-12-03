@@ -3,120 +3,119 @@
     --------------------
     Halaman ini adalah komponen login untuk pengguna.
     - Menggunakan Tailwind CSS untuk styling.
-    - Form sudah sesuai standar Laravel (POST ke route login, CSRF, dan atribut name pada input).
+    - Form sudah sesuai standar Laravel (POST ke route login.post, CSRF, dan atribut name pada input).
     - Terdapat validasi required pada setiap input.
     - Terdapat fitur "Remember Me" dan "Forgot Password".
-    - Terdapat tombol login sosial (Facebook & Google).
     - Link pendaftaran diarahkan ke halaman register.
+    - Menampilkan error validasi dari backend.
     - Siap untuk integrasi backend Laravel.
 -->
 
-<div class="grid min-h-screen w-full grid-cols-12 overflow-hidden bg-[#422ED0]">
-    <!-- Bagian Kiri -->
-    <div class="element z-3 col-span-7 flex p-32 text-white">
-        <div class="w-full min-w-sm flex flex-col justify-between">
-            <div>
-                <img src="https://www.psit.ac.in/assets/webp/PSIT_logo_Red.svg" alt="" style="filter: brightness(0) invert(1);" />
-            </div>
-            <div>
-                <h1 class="my-8 text-7xl leading-20 font-bold text-indigo-50">Masuk ke akun Anda dan temukan pengalaman baru</h1>
-                <p class="mb-2 text-xl">Belum punya akun?</p>
-                <div class="flex h-12 justify-start items-center gap-x-6 dark:text-white">
-                    <a class="group flex h-min items-center disabled:opacity-50 disabled:hover:opacity-50 hover:opacity-95 justify-center ring-none rounded-lg shadow-lg font-semibold py-2 px-4 font-dm focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-violet-500 border-b-violet-700 disabled:border-0 disabled:bg-violet-500 disabled:text-white ring-white text-white border-b-4 hover:border-0 active:border-0 hover:text-gray-100 active:bg-violet-800 active:text-gray-300 focus-visible:outline-violet-500 text-sm sm:text-base dark:bg-gray-700 dark:border-gray-700 dark:border-b-gray-900"
-                        href="{{ route('register') }}">
-                        Daftar Pengguna Baru
-                    </a>
-                    <a class="group flex h-min ring-none items-center justify-center hover:opacity-95 disabled:opacity-50 rounded-lg py-2 px-4 font-dm focus:outline-none ring-transparent text-violet-800 border border-violet-500 border-b-violet-400 border-b-4 hover:border active:border bg-white hover:text-violet-900 hover:bg-gray-50 active:bg-gray-100 active:text-violet-600 focus-visible:outline-violet-600 focus-visible:ring-violet-700 text-sm sm:text-base dark:bg-gray-700 dark:border-gray-700 dark:border-b-gray-900 dark:text-white"
-                        href="#">
-                        <svg aria-hidden="true" class="h-3 w-3 flex-none fill-violet-600 group-active:fill-current">
-                            <path
-                                d="m9.997 6.91-7.583 3.447A1 1 0 0 1 1 9.447V2.553a1 1 0 0 1 1.414-.91L9.997 5.09c.782.355.782 1.465 0 1.82Z">
-                            </path>
+<div class="h-full bg-gray-400 dark:bg-gray-900">
+    <div class="mx-auto">
+        <div class="flex justify-center px-6 py-12">
+            <div class="w-full xl:w-3/4 lg:w-11/12 flex">
+                <div class="w-full h-auto bg-gradient-to-br from-blue-500 to-purple-500 dark:bg-gray-800 hidden lg:flex lg:w-5/12 bg-cover rounded-l-lg items-center justify-center">
+                    <div class="text-center text-white p-8">
+                        <h2 class="text-4xl font-bold mb-4">Selamat Datang Kembali!</h2>
+                        <p class="text-lg mb-6">Masuk ke akun Anda untuk melanjutkan</p>
+                        <svg class="w-24 h-24 mx-auto opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
-                        <span class="ml-3">Buat Login Orang Tua</span>
-                    </a>
-                </div>
-            </div>
-            <div class="mb-0 hidden">
-                <h2 class="mb-4 text-4xl font-bold text-indigo-50">Selamat Datang di <span class="text-4xl" style='font-family: "Times New Roman", Times, serif;'>LibSys</span></h2>
-                <p class="text-xl text-indigo-50">Akses website ini terbatas untuk Manajemen dan Admin, dan Mahasiswa institusi saja (Login untuk navigasi website). Pengunjung dapat mengunjungi <a href="#" class="text-xl text-indigo-100"> www.psit.ac.in</a> untuk informasi institusi.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bagian Kanan -->
-    <div class="relative z-3 col-span-5 flex rounded-tl-[44px] bg-white">
-        <div class="absolute top-4 right-0 -left-4 z-2 h-full w-full rounded-tl-[44px] bg-white/50"></div>
-        <div class="z-10 w-full">
-            <div class="z-4 mx-auto mt-20 max-w-sm bg-white p-4 sm:p-10 lg:max-w-lg xl:max-w-xl">
-                <h2 class="mb-10 text-4xl font-bold text-slate-600">Hai, Selamat Datang! 👋</h2>
-                <form method="POST" action="{{ route('login.post') }}">
-                    @csrf
-
-                    <!-- Email -->
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        required
-                        autofocus
-                        class="mb-6 w-full border-b border-gray-300 px-4 py-5 text-lg font-medium text-slate-700 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                    />
-
-                    <!-- Password -->
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Kata Sandi"
-                        required
-                        class="mb-6 w-full border-b border-gray-300 px-4 py-5 text-lg font-medium text-slate-700 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                    />
-
-                    <!-- Remember Me dan Lupa Password -->
-                    <div class="mb-10 flex items-center justify-between">
-                        <label class="flex items-center space-x-2">
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                class="form-checkbox text-indigo-600"
-                            />
-                        </label>
                     </div>
-
-                    <!-- Tombol Login -->
-                    <button
-                        type="submit"
-                        class="mb-6 w-full transform-gpu rounded-full bg-linear-to-r from-blue-500 to-purple-500 px-8 py-4 font-bold text-white transition-transform hover:-translate-y-1 hover:shadow-lg"
-                    >
-                        Masuk
-                    </button>
-                </form>
-
-                <!-- Atau -->
-                <div class="mb-6 flex items-center justify-center">
-                    <span class="w-1/5 border-b border-white lg:w-1/4"></span>
-                    <span class="mx-2 text-xs text-gray-400">ATAU</span>
-                    <span class="w-1/5 border-b border-white lg:w-1/4"></span>
                 </div>
+                <div class="w-full lg:w-7/12 bg-white dark:bg-gray-700 p-5 rounded-lg lg:rounded-l-none">
+                    <h3 class="py-4 text-2xl text-center text-gray-800 dark:text-white font-bold">Masuk</h3>
+                    
+                    <!-- Error Messages -->
+                    @if($errors->any())
+                        <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                            <ul class="list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-                <!-- Login Sosial -->
-                <div class="flex space-x-4">
-                    <button class="flex w-1/2 items-center justify-center rounded-lg border border-gray-300 py-2 font-medium text-slate-700 hover:bg-gray-50">
-                        <img src="https://www.svgrepo.com/show/303108/facebook-1-logo.svg" class="mr-2 h-5 w-5" alt="Facebook" />
-                        Facebook
-                    </button>
-                    <button class="flex w-1/2 items-center justify-center rounded-lg border border-gray-300 py-2 font-medium text-slate-700 hover:bg-gray-50">
-                        <img src="https://www.svgrepo.com/show/355037/google.svg" class="mr-2 h-5 w-5" alt="Google" />
-                        Google
-                    </button>
+                    <form method="POST" action="{{ route('login.post') }}" class="px-8 pt-6 pb-8 mb-4 bg-white dark:bg-gray-800 rounded">
+                        @csrf
+                        
+                        <!-- Email -->
+                        <div class="mb-4">
+                            <label class="block mb-2 text-sm font-bold text-gray-700 dark:text-white" for="email">
+                                Email
+                            </label>
+                            <input
+                                class="w-full px-3 py-2 text-sm leading-tight text-gray-700 dark:text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline @error('email') border-red-500 bg-red-50 @else border-gray-300 @enderror"
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="Email"
+                                value="{{ old('email') }}"
+                                required
+                                autofocus
+                            />
+                            @error('email')
+                                <p class="text-xs italic text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-4">
+                            <label class="block mb-2 text-sm font-bold text-gray-700 dark:text-white" for="password">
+                                Kata Sandi
+                            </label>
+                            <input
+                                class="w-full px-3 py-2 text-sm leading-tight text-gray-700 dark:text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline @error('password') border-red-500 bg-red-50 @else border-gray-300 @enderror"
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="Kata Sandi"
+                                required
+                            />
+                            @error('password')
+                                <p class="text-xs italic text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="mb-4 flex items-center">
+                            <input
+                                class="w-4 h-4"
+                                id="remember"
+                                name="remember"
+                                type="checkbox"
+                                value="on"
+                            />
+                            <label class="ml-2 text-sm text-gray-600 dark:text-gray-400" for="remember">
+                                Ingat saya
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mb-6 text-center">
+                            <button
+                                class="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-900 focus:outline-none focus:shadow-outline transition duration-200"
+                                type="submit"
+                            >
+                                Masuk
+                            </button>
+                        </div>
+                        <hr class="mb-6 border-t" />
+                        
+                        <!-- Register Link -->
+                        <div class="text-center">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Belum punya akun?</p>
+                            <a class="inline-block text-sm text-blue-500 dark:text-blue-500 align-baseline hover:text-blue-800 font-semibold"
+                                href="{{ route('register') }}">
+                                Daftar sekarang
+                            </a>
+                        </div>
+                    </form>
                 </div>
-
-                <!-- Daftar -->
-                <p class="mt-12 text-center text-sm text-gray-500">
-                    Belum punya akun?
-                    <a href="{{ route('register') }}" class="text-indigo-600 hover:underline">Daftar di sini</a>
-                </p>
             </div>
         </div>
     </div>
 </div>
+              
