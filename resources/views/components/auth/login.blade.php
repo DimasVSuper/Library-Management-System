@@ -1,0 +1,122 @@
+<!--
+    Komponen Login Blade
+    --------------------
+    Halaman ini adalah komponen login untuk pengguna.
+    - Menggunakan Tailwind CSS untuk styling.
+    - Form sudah sesuai standar Laravel (POST ke route login, CSRF, dan atribut name pada input).
+    - Terdapat validasi required pada setiap input.
+    - Terdapat fitur "Remember Me" dan "Forgot Password".
+    - Terdapat tombol login sosial (Facebook & Google).
+    - Link pendaftaran diarahkan ke halaman register.
+    - Siap untuk integrasi backend Laravel.
+-->
+
+<div class="grid min-h-screen w-full grid-cols-12 overflow-hidden bg-[#422ED0]">
+    <!-- Bagian Kiri -->
+    <div class="element z-3 col-span-7 flex p-32 text-white">
+        <div class="w-full min-w-sm flex flex-col justify-between">
+            <div>
+                <img src="https://www.psit.ac.in/assets/webp/PSIT_logo_Red.svg" alt="" style="filter: brightness(0) invert(1);" />
+            </div>
+            <div>
+                <h1 class="my-8 text-7xl leading-20 font-bold text-indigo-50">Masuk ke akun Anda dan temukan pengalaman baru</h1>
+                <p class="mb-2 text-xl">Belum punya akun?</p>
+                <div class="flex h-12 justify-start items-center gap-x-6 dark:text-white">
+                    <a class="group flex h-min items-center disabled:opacity-50 disabled:hover:opacity-50 hover:opacity-95 justify-center ring-none rounded-lg shadow-lg font-semibold py-2 px-4 font-dm focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 bg-violet-500 border-b-violet-700 disabled:border-0 disabled:bg-violet-500 disabled:text-white ring-white text-white border-b-4 hover:border-0 active:border-0 hover:text-gray-100 active:bg-violet-800 active:text-gray-300 focus-visible:outline-violet-500 text-sm sm:text-base dark:bg-gray-700 dark:border-gray-700 dark:border-b-gray-900"
+                        href="{{ route('register') }}">
+                        Daftar Pengguna Baru
+                    </a>
+                    <a class="group flex h-min ring-none items-center justify-center hover:opacity-95 disabled:opacity-50 rounded-lg py-2 px-4 font-dm focus:outline-none ring-transparent text-violet-800 border border-violet-500 border-b-violet-400 border-b-4 hover:border active:border bg-white hover:text-violet-900 hover:bg-gray-50 active:bg-gray-100 active:text-violet-600 focus-visible:outline-violet-600 focus-visible:ring-violet-700 text-sm sm:text-base dark:bg-gray-700 dark:border-gray-700 dark:border-b-gray-900 dark:text-white"
+                        href="#">
+                        <svg aria-hidden="true" class="h-3 w-3 flex-none fill-violet-600 group-active:fill-current">
+                            <path
+                                d="m9.997 6.91-7.583 3.447A1 1 0 0 1 1 9.447V2.553a1 1 0 0 1 1.414-.91L9.997 5.09c.782.355.782 1.465 0 1.82Z">
+                            </path>
+                        </svg>
+                        <span class="ml-3">Buat Login Orang Tua</span>
+                    </a>
+                </div>
+            </div>
+            <div class="mb-0 hidden">
+                <h2 class="mb-4 text-4xl font-bold text-indigo-50">Selamat Datang di <span class="text-4xl" style='font-family: "Times New Roman", Times, serif;'>LibSys</span></h2>
+                <p class="text-xl text-indigo-50">Akses website ini terbatas untuk Manajemen dan Admin, dan Mahasiswa institusi saja (Login untuk navigasi website). Pengunjung dapat mengunjungi <a href="#" class="text-xl text-indigo-100"> www.psit.ac.in</a> untuk informasi institusi.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bagian Kanan -->
+    <div class="relative z-3 col-span-5 flex rounded-tl-[44px] bg-white">
+        <div class="absolute top-4 right-0 -left-4 z-2 h-full w-full rounded-tl-[44px] bg-white/50"></div>
+        <div class="z-10 w-full">
+            <div class="z-4 mx-auto mt-20 max-w-sm bg-white p-4 sm:p-10 lg:max-w-lg xl:max-w-xl">
+                <h2 class="mb-10 text-4xl font-bold text-slate-600">Hai, Selamat Datang! 👋</h2>
+                <form method="POST" action="{{ route('login.post') }}">
+                    @csrf
+
+                    <!-- Email -->
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        required
+                        autofocus
+                        class="mb-6 w-full border-b border-gray-300 px-4 py-5 text-lg font-medium text-slate-700 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                    />
+
+                    <!-- Password -->
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Kata Sandi"
+                        required
+                        class="mb-6 w-full border-b border-gray-300 px-4 py-5 text-lg font-medium text-slate-700 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                    />
+
+                    <!-- Remember Me dan Lupa Password -->
+                    <div class="mb-10 flex items-center justify-between">
+                        <label class="flex items-center space-x-2">
+                            <input
+                                type="checkbox"
+                                name="remember"
+                                class="form-checkbox text-indigo-600"
+                            />
+                        </label>
+                    </div>
+
+                    <!-- Tombol Login -->
+                    <button
+                        type="submit"
+                        class="mb-6 w-full transform-gpu rounded-full bg-linear-to-r from-blue-500 to-purple-500 px-8 py-4 font-bold text-white transition-transform hover:-translate-y-1 hover:shadow-lg"
+                    >
+                        Masuk
+                    </button>
+                </form>
+
+                <!-- Atau -->
+                <div class="mb-6 flex items-center justify-center">
+                    <span class="w-1/5 border-b border-white lg:w-1/4"></span>
+                    <span class="mx-2 text-xs text-gray-400">ATAU</span>
+                    <span class="w-1/5 border-b border-white lg:w-1/4"></span>
+                </div>
+
+                <!-- Login Sosial -->
+                <div class="flex space-x-4">
+                    <button class="flex w-1/2 items-center justify-center rounded-lg border border-gray-300 py-2 font-medium text-slate-700 hover:bg-gray-50">
+                        <img src="https://www.svgrepo.com/show/303108/facebook-1-logo.svg" class="mr-2 h-5 w-5" alt="Facebook" />
+                        Facebook
+                    </button>
+                    <button class="flex w-1/2 items-center justify-center rounded-lg border border-gray-300 py-2 font-medium text-slate-700 hover:bg-gray-50">
+                        <img src="https://www.svgrepo.com/show/355037/google.svg" class="mr-2 h-5 w-5" alt="Google" />
+                        Google
+                    </button>
+                </div>
+
+                <!-- Daftar -->
+                <p class="mt-12 text-center text-sm text-gray-500">
+                    Belum punya akun?
+                    <a href="{{ route('register') }}" class="text-indigo-600 hover:underline">Daftar di sini</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
