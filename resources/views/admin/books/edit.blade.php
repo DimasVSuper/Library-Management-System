@@ -1,7 +1,8 @@
-@extends('main')
+@extends('layouts.admin')
+
+@section('title', 'Edit Buku')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-8 px-4">
     <div class="max-w-3xl mx-auto">
         <!-- Header -->
         <div class="mb-8">
@@ -166,7 +167,6 @@
                         @enderror
                     </div>
                 </div>
-
                 <!-- Buttons -->
                 <div class="flex gap-4 pt-6 border-t border-slate-200 dark:border-slate-700">
                     <button 
@@ -185,5 +185,4 @@
             </form>
         </div>
     </div>
-</div>
 @endsection
