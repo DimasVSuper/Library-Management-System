@@ -16,7 +16,7 @@ class BorrowingController extends Controller
     public function index()
     {
         $borrowings = Borrowing::with(['member', 'book'])->paginate(10);
-        return view('admin.borrowing.index', compact('borrowings'));
+        return view('admin.borrowings.index', compact('borrowings'));
     }
 
     /**
@@ -26,7 +26,7 @@ class BorrowingController extends Controller
     {
         $members = Member::where('status', 'active')->get();
         $books = Book::where('available_stock', '>', 0)->get();
-        return view('admin.borrowing.create', compact('members', 'books'));
+        return view('admin.borrowings.create', compact('members', 'books'));
     }
 
     /**
@@ -69,7 +69,7 @@ class BorrowingController extends Controller
         // Decrease available stock
         $book->decrement('available_stock');
 
-        return redirect()->route('borrowing.index')->with('success', 'Peminjaman buku berhasil dicatat!');
+        return redirect()->route('borrowings.index')->with('success', 'Peminjaman buku berhasil dicatat!');
     }
 
     /**
@@ -78,7 +78,7 @@ class BorrowingController extends Controller
     public function show(Borrowing $borrowing)
     {
         $borrowing->load(['member', 'book']);
-        return view('admin.borrowing.show', compact('borrowing'));
+        return view('admin.borrowings.show', compact('borrowing'));
     }
 
     /**
@@ -88,7 +88,7 @@ class BorrowingController extends Controller
     {
         $members = Member::where('status', 'active')->get();
         $books = Book::all();
-        return view('admin.borrowing.edit', compact('borrowing', 'members', 'books'));
+        return view('admin.borrowings.edit', compact('borrowing', 'members', 'books'));
     }
 
     /**
@@ -107,7 +107,7 @@ class BorrowingController extends Controller
 
         $borrowing->update($validated);
 
-        return redirect()->route('borrowing.index')->with('success', 'Data peminjaman berhasil diperbarui!');
+        return redirect()->route('borrowings.index')->with('success', 'Data peminjaman berhasil diperbarui!');
     }
 
     /**
@@ -121,7 +121,7 @@ class BorrowingController extends Controller
         }
 
         $borrowing->delete();
-        return redirect()->route('borrowing.index')->with('success', 'Data peminjaman berhasil dihapus!');
+        return redirect()->route('borrowings.index')->with('success', 'Data peminjaman berhasil dihapus!');
     }
 
     /**
@@ -154,7 +154,7 @@ class BorrowingController extends Controller
         // Increase available stock
         $borrowing->book->increment('available_stock');
 
-        return redirect()->route('borrowing.index')->with('success', 'Pengembalian buku berhasil dicatat!' . ($fine_amount > 0 ? ' (Denda: Rp ' . number_format($fine_amount, 0, ',', '.') . ')' : ''));
+        return redirect()->route('borrowings.index')->with('success', 'Pengembalian buku berhasil dicatat!' . ($fine_amount > 0 ? ' (Denda: Rp ' . number_format($fine_amount, 0, ',', '.') . ')' : ''));
     }
 }
 
