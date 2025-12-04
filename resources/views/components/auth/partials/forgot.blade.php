@@ -1,1 +1,0 @@
-<a class="link link-primary">Forgot Password?</a>
