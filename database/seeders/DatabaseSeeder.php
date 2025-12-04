@@ -15,11 +15,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create admin user
+        User::factory()->create([
+            'name' => 'Administrator',
+            'email' => 'admin@libsys.com',
+        ]);
 
+        // Create test user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]);
+
+        // Run other seeders
+        $this->call([
+            BookSeeder::class,
+            MemberSeeder::class,
+            BorrowingSeeder::class,
         ]);
     }
 }
