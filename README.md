@@ -2,6 +2,8 @@
 
 Sistem manajemen perpustakaan modern yang dibangun dengan **Laravel 12** dan **Tailwind CSS** untuk mengelola buku, anggota, dan transaksi peminjaman dengan antarmuka yang intuitif.
 
+> **Catatan:** Projek ini adalah bentuk pembelajaran Dimas dalam memahami Laravel secara mendalam, menggunakan Cache/Redis dan Frontend Structure yang rapih. Dibantu oleh Gemini 3, Claude Opus 4.5 dan Github Copilot.
+
 ---
 
 ## 🚀 Quick Start
@@ -135,6 +137,17 @@ Atau buat akun baru di halaman **Register**: `http://localhost:8000/register`
 - ✅ Status transaksi: Borrowed, Returned, Overdue
 - ✅ Validasi pengembalian (tidak bisa kembali jika sudah di-return)
 
+#### 7. **Fine Management (Manajemen Denda)**
+- ✅ Otomatis generate denda saat pengembalian terlambat
+- ✅ List semua denda dengan status (Paid/Unpaid)
+- ✅ Detail informasi denda (Member, Buku, Hari Terlambat)
+- ✅ Fitur pembayaran denda (Mark as Paid)
+- ✅ Edit & Hapus data denda
+
+#### 8. **System Optimization**
+- ✅ **Redis Caching**: Implementasi caching pada semua modul utama (Books, Members, Borrowings, Fines) untuk performa tinggi.
+- ✅ **Search Engine**: Fitur pencarian real-time di semua modul.
+
 ---
 
 ## 🛠️ Tech Stack
@@ -142,10 +155,10 @@ Atau buat akun baru di halaman **Register**: `http://localhost:8000/register`
 | Layer | Technology | Version |
 |-------|-----------|---------|
 | **Framework** | Laravel | 12.0 |
-| **Database** | MySQL | 5.7+ |
+| **Database** | MySQL | 8.0+ |
 | **Frontend** | Blade Templates | - |
-| **CSS Framework** | Tailwind CSS | 4.0 |
-| **UI Components** | DaisyUI | 5.5.5 |
+| **CSS Framework** | Tailwind CSS | 3.4 |
+| **Design Style** | Glassmorphism | - |
 | **Build Tool** | Vite | - |
 | **Cache** | Redis | (via Predis) |
 | **Authentication** | Laravel Auth | - |
@@ -160,40 +173,31 @@ Library-Management-System/
 │   ├── Http/
 │   │   └── Controllers/
 │   │       ├── Auth/
-│   │       │   ├── LoginController.php
-│   │       │   └── RegisterController.php
 │   │       ├── BookController.php
-│   │       ├── UserController.php (Members)
-│   │       └── BorrowingController.php
+│   │       ├── MemberController.php
+│   │       ├── BorrowingController.php
+│   │       └── FineController.php
 │   └── Models/
 │       ├── User.php
 │       ├── Book.php
 │       ├── Member.php
-│       └── Borrowing.php
+│       ├── Borrowing.php
+│       └── Fine.php
 ├── database/
 │   ├── migrations/
-│   │   ├── create_users_table.php
-│   │   ├── create_books_table.php
-│   │   ├── create_members_table.php
-│   │   └── create_borrowings_table.php
 │   └── seeders/
 ├── resources/
 │   ├── views/
-│   │   ├── main.blade.php
+│   │   ├── layouts/
 │   │   ├── admin/
 │   │   │   ├── dashboard.blade.php
 │   │   │   ├── books/
-│   │   │   ├── user/ (members)
-│   │   │   └── borrowing/
-│   │   ├── auth/
-│   │   └── components/
-│   ├── css/
-│   └── js/
+│   │   │   ├── members/
+│   │   │   ├── borrowings/
+│   │   │   └── fines/
+│   │   └── auth/
 ├── routes/
 │   └── web.php
-├── public/
-├── storage/
-└── vendor/
 ```
 
 ---
@@ -224,9 +228,15 @@ returned_date (nullable), status (enum), fine_amount, notes,
 created_at, updated_at
 ```
 
+### Fines Table
+```sql
+id, borrowing_id (FK), amount, days_overdue, status (enum: paid, unpaid), 
+paid_at (nullable), notes, created_at, updated_at
+```
+
 ---
 
-## 🎯 API Routes (RESTful)
+## 🎯 Routes
 
 ### Authentication
 - `GET/POST /login` - Login
@@ -246,23 +256,31 @@ created_at, updated_at
 - `DELETE /books/{id}` - Hapus buku
 
 ### Members
-- `GET /user` - List member
-- `GET /user/create` - Form tambah member
-- `POST /user` - Store member baru
-- `GET /user/{id}` - Detail member
-- `GET /user/{id}/edit` - Form edit member
-- `PUT /user/{id}` - Update member
-- `DELETE /user/{id}` - Hapus member
+- `GET /members` - List member
+- `GET /members/create` - Form tambah member
+- `POST /members` - Store member baru
+- `GET /members/{id}` - Detail member
+- `GET /members/{id}/edit` - Form edit member
+- `PUT /members/{id}` - Update member
+- `DELETE /members/{id}` - Hapus member
 
 ### Borrowing
-- `GET /borrowing` - List peminjaman
-- `GET /borrowing/create` - Form buat peminjaman
-- `POST /borrowing` - Store peminjaman baru
-- `GET /borrowing/{id}` - Detail peminjaman
-- `GET /borrowing/{id}/edit` - Form edit peminjaman
-- `PUT /borrowing/{id}` - Update peminjaman
-- `DELETE /borrowing/{id}` - Hapus peminjaman
-- `PUT /borrowing/{id}/return` - Return buku & hitung denda
+- `GET /borrowings` - List peminjaman
+- `GET /borrowings/create` - Form buat peminjaman
+- `POST /borrowings` - Store peminjaman baru
+- `GET /borrowings/{id}` - Detail peminjaman
+- `GET /borrowings/{id}/edit` - Form edit peminjaman
+- `PUT /borrowings/{id}` - Update peminjaman
+- `DELETE /borrowings/{id}` - Hapus peminjaman
+- `PUT /borrowings/{id}/return` - Return buku & hitung denda
+
+### Fines
+- `GET /fines` - List denda
+- `GET /fines/{id}` - Detail denda
+- `GET /fines/{id}/edit` - Form edit denda
+- `PUT /fines/{id}` - Update denda
+- `DELETE /fines/{id}` - Hapus denda
+- `PUT /fines/{id}/pay` - Bayar denda
 
 ---
 
@@ -271,18 +289,15 @@ created_at, updated_at
 - 🌙 **Dark Mode Support** - Tema terang & gelap
 - 📱 **Responsive Design** - Optimal di desktop, tablet, mobile
 - 🎯 **Intuitive Navigation** - Sidebar menu yang jelas
-- ✨ **Smooth Animations** - Transisi halus (300ms)
-- 🎨 **Modern Styling** - Gradient, shadows, dan spacing konsisten
-- ⚡ **Fast Loading** - Pagination & lazy loading
-- 🔔 **Success/Error Messages** - Feedback user yang jelas
-- ♿ **Accessibility** - Semantic HTML & ARIA labels
+- ✨ **Glassmorphism Design** - Tampilan modern dengan efek blur dan transparansi
+- ⚡ **Redis Optimization** - Loading data super cepat dengan caching
+- 🔍 **Global Search** - Pencarian data di semua modul
 
 ---
 
 ## 📚 Next Features (Akan Datang)
 
 ### 🔹 Standard Features
-- Fine Management (Manajemen denda detail)
 - Categories & Authors Management
 - Reports & Export (PDF/Excel)
 - Book Copies System

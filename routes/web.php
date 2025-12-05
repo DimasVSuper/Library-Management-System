@@ -1,30 +1,39 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\BorrowingController;
+use App\Http\Controllers\FineController;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', function () {
-        return view('main');
-    });
-    Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLogin'])->name('login');
-    Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'post'])->name('login.post');
-    Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegister'])->name('register');
-    Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'post'])->name('register.post');
+        return view('welcome');
+    })->name('home');
+    Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
+    Route::post('/login', [LoginController::class, 'post'])->name('login.post');
+    Route::get('/register', [RegisterController::class, 'showRegister'])->name('register');
+    Route::post('/register', [RegisterController::class, 'post'])->name('register.post');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('Dashboard');
-    Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('Dashboard');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     
     // Book Management Routes
-    Route::resource('books', \App\Http\Controllers\BookController::class);
+    Route::resource('books', BookController::class);
     
     // Member Management Routes
-    Route::resource('user', \App\Http\Controllers\UserController::class);
+    Route::resource('members', MemberController::class);
     
     // Borrowing Management Routes
-    Route::resource('borrowing', \App\Http\Controllers\BorrowingController::class);
-    Route::put('borrowing/{borrowing}/return', [\App\Http\Controllers\BorrowingController::class, 'return'])->name('borrowing.return');
+    Route::resource('borrowings', BorrowingController::class);
+    Route::put('borrowings/{borrowing}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
+
+    // Fine Management Routes
+    Route::resource('fines', FineController::class)->except(['create', 'store']);
+    Route::put('fines/{fine}/pay', [FineController::class, 'pay'])->name('fines.pay');
 });

@@ -1,7 +1,8 @@
-@extends('main')
+@extends('layouts.admin')
+
+@section('title', 'Tambah Buku')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-8 px-4">
     <div class="max-w-3xl mx-auto">
         <!-- Header -->
         <div class="mb-8">
@@ -184,5 +185,4 @@
             </form>
         </div>
     </div>
-</div>
 @endsection

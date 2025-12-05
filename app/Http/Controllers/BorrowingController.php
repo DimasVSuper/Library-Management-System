@@ -5,18 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\Borrowing;
 use App\Models\Book;
 use App\Models\Member;
+use App\Models\Fine;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class BorrowingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $borrowings = Borrowing::with(['member', 'book'])->paginate(10);
-        return view('admin.borrowing.index', compact('borrowings'));
+        $page = $request->get('page', 1);
+        $search = $request->get('search', '');
+
+        $borrowings = Cache::tags(['borrowings'])->remember("borrowings_index_page_{$page}_search_{$search}", 600, function () use ($request) {
+            $query = Borrowing::with(['member', 'book']);
+
+            if ($request->has('search')) {
+                $search = $request->search;
+                $query->whereHas('member', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })->orWhereHas('book', function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%");
+                });
+            }
+
+            return $query->latest()->paginate(10);
+        });
+
+        return view('admin.borrowings.index', compact('borrowings'));
     }
 
     /**
@@ -26,7 +45,7 @@ class BorrowingController extends Controller
     {
         $members = Member::where('status', 'active')->get();
         $books = Book::where('available_stock', '>', 0)->get();
-        return view('admin.borrowing.create', compact('members', 'books'));
+        return view('admin.borrowings.create', compact('members', 'books'));
     }
 
     /**
@@ -69,7 +88,9 @@ class BorrowingController extends Controller
         // Decrease available stock
         $book->decrement('available_stock');
 
-        return redirect()->route('borrowing.index')->with('success', 'Peminjaman buku berhasil dicatat!');
+        Cache::tags(['borrowings', 'books'])->flush();
+
+        return redirect()->route('borrowings.index')->with('success', 'Peminjaman buku berhasil dicatat!');
     }
 
     /**
@@ -78,7 +99,7 @@ class BorrowingController extends Controller
     public function show(Borrowing $borrowing)
     {
         $borrowing->load(['member', 'book']);
-        return view('admin.borrowing.show', compact('borrowing'));
+        return view('admin.borrowings.show', compact('borrowing'));
     }
 
     /**
@@ -88,7 +109,7 @@ class BorrowingController extends Controller
     {
         $members = Member::where('status', 'active')->get();
         $books = Book::all();
-        return view('admin.borrowing.edit', compact('borrowing', 'members', 'books'));
+        return view('admin.borrowings.edit', compact('borrowing', 'members', 'books'));
     }
 
     /**
@@ -107,7 +128,9 @@ class BorrowingController extends Controller
 
         $borrowing->update($validated);
 
-        return redirect()->route('borrowing.index')->with('success', 'Data peminjaman berhasil diperbarui!');
+        Cache::tags(['borrowings'])->flush();
+
+        return redirect()->route('borrowings.index')->with('success', 'Data peminjaman berhasil diperbarui!');
     }
 
     /**
@@ -121,7 +144,8 @@ class BorrowingController extends Controller
         }
 
         $borrowing->delete();
-        return redirect()->route('borrowing.index')->with('success', 'Data peminjaman berhasil dihapus!');
+        Cache::tags(['borrowings', 'books'])->flush();
+        return redirect()->route('borrowings.index')->with('success', 'Data peminjaman berhasil dihapus!');
     }
 
     /**
@@ -139,6 +163,8 @@ class BorrowingController extends Controller
 
         // Calculate fine if overdue
         $fine_amount = 0;
+        $days_overdue = 0;
+        
         if ($today > $borrowing->due_date) {
             $days_overdue = $today->diffInDays($borrowing->due_date);
             $fine_amount = $days_overdue * 5000; // Rp 5000 per hari
@@ -151,10 +177,23 @@ class BorrowingController extends Controller
             'fine_amount' => $fine_amount,
         ]);
 
+        // Create Fine record if there is a fine
+        if ($fine_amount > 0) {
+            Fine::create([
+                'borrowing_id' => $borrowing->id,
+                'amount' => $fine_amount,
+                'days_overdue' => $days_overdue,
+                'status' => 'unpaid',
+                'notes' => 'Denda keterlambatan ' . $days_overdue . ' hari.',
+            ]);
+        }
+
         // Increase available stock
         $borrowing->book->increment('available_stock');
 
-        return redirect()->route('borrowing.index')->with('success', 'Pengembalian buku berhasil dicatat!' . ($fine_amount > 0 ? ' (Denda: Rp ' . number_format($fine_amount, 0, ',', '.') . ')' : ''));
+        Cache::tags(['borrowings', 'books', 'fines'])->flush();
+
+        return redirect()->route('borrowings.index')->with('success', 'Pengembalian buku berhasil dicatat!' . ($fine_amount > 0 ? ' (Denda: Rp ' . number_format($fine_amount, 0, ',', '.') . ')' : ''));
     }
 }
 
