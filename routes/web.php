@@ -10,7 +10,7 @@ use App\Http\Controllers\BorrowingController;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', function () {
-        return view('home');
+        return view('welcome');
     })->name('home');
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'post'])->name('login.post');
