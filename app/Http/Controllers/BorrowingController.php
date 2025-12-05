@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Borrowing;
 use App\Models\Book;
 use App\Models\Member;
+use App\Models\Fine;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -139,6 +140,8 @@ class BorrowingController extends Controller
 
         // Calculate fine if overdue
         $fine_amount = 0;
+        $days_overdue = 0;
+        
         if ($today > $borrowing->due_date) {
             $days_overdue = $today->diffInDays($borrowing->due_date);
             $fine_amount = $days_overdue * 5000; // Rp 5000 per hari
@@ -150,6 +153,17 @@ class BorrowingController extends Controller
             'status' => 'returned',
             'fine_amount' => $fine_amount,
         ]);
+
+        // Create Fine record if there is a fine
+        if ($fine_amount > 0) {
+            Fine::create([
+                'borrowing_id' => $borrowing->id,
+                'amount' => $fine_amount,
+                'days_overdue' => $days_overdue,
+                'status' => 'unpaid',
+                'notes' => 'Denda keterlambatan ' . $days_overdue . ' hari.',
+            ]);
+        }
 
         // Increase available stock
         $borrowing->book->increment('available_stock');

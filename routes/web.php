@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\BorrowingController;
+use App\Http\Controllers\FineController;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', function () {
@@ -31,4 +32,8 @@ Route::middleware(['auth'])->group(function () {
     // Borrowing Management Routes
     Route::resource('borrowings', BorrowingController::class);
     Route::put('borrowings/{borrowing}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
+
+    // Fine Management Routes
+    Route::resource('fines', FineController::class)->except(['create', 'store']);
+    Route::put('fines/{fine}/pay', [FineController::class, 'pay'])->name('fines.pay');
 });

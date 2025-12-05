@@ -19,6 +19,8 @@ class MemberFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = fake('id_ID');
+        
         $cities = [
             'Jakarta',
             'Surabaya',
@@ -38,14 +40,14 @@ class MemberFactory extends Factory
         ];
 
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'phone' => fake()->phoneNumber(),
-            'address' => fake()->streetAddress(),
-            'city' => fake()->randomElement($cities),
-            'join_date' => fake()->dateTimeBetween('-2 years', 'now'),
-            'status' => fake()->randomElement(['active', 'active', 'active', 'inactive']), // 75% active
-            'notes' => fake()->optional(0.3)->sentence(),
+            'name' => $faker->name(),
+            'email' => $faker->unique()->safeEmail(),
+            'phone' => $faker->phoneNumber(),
+            'address' => $faker->address(),
+            'city' => $faker->randomElement($cities),
+            'join_date' => $faker->dateTimeBetween('-2 years', 'now'),
+            'status' => $faker->randomElement(['active', 'active', 'active', 'inactive']), // 75% active
+            'notes' => $faker->optional(0.3)->sentence(),
         ];
     }
 

@@ -21,7 +21,7 @@ class BorrowingFactory extends Factory
      */
     public function definition(): array
     {
-        $borrowDate = fake()->dateTimeBetween('-3 months', 'now');
+        $borrowDate = fake('id_ID')->dateTimeBetween('-3 months', 'now');
         $dueDate = (clone $borrowDate)->modify('+14 days');
         
         return [
@@ -32,7 +32,7 @@ class BorrowingFactory extends Factory
             'returned_date' => null,
             'status' => 'borrowed',
             'fine_amount' => 0,
-            'notes' => fake()->optional(0.2)->sentence(),
+            'notes' => fake('id_ID')->optional(0.2)->sentence(),
         ];
     }
 
@@ -42,7 +42,7 @@ class BorrowingFactory extends Factory
     public function borrowed(): static
     {
         return $this->state(function (array $attributes) {
-            $borrowDate = fake()->dateTimeBetween('-2 weeks', 'now');
+            $borrowDate = fake('id_ID')->dateTimeBetween('-2 weeks', 'now');
             $dueDate = (clone $borrowDate)->modify('+14 days');
             
             return [
@@ -61,9 +61,9 @@ class BorrowingFactory extends Factory
     public function returned(): static
     {
         return $this->state(function (array $attributes) {
-            $borrowDate = fake()->dateTimeBetween('-2 months', '-2 weeks');
+            $borrowDate = fake('id_ID')->dateTimeBetween('-2 months', '-2 weeks');
             $dueDate = (clone $borrowDate)->modify('+14 days');
-            $returnedDate = fake()->dateTimeBetween($borrowDate, $dueDate);
+            $returnedDate = fake('id_ID')->dateTimeBetween($borrowDate, $dueDate);
             
             return [
                 'borrow_date' => $borrowDate,
@@ -81,7 +81,7 @@ class BorrowingFactory extends Factory
     public function overdue(): static
     {
         return $this->state(function (array $attributes) {
-            $borrowDate = fake()->dateTimeBetween('-2 months', '-3 weeks');
+            $borrowDate = fake('id_ID')->dateTimeBetween('-2 months', '-3 weeks');
             $dueDate = (clone $borrowDate)->modify('+14 days');
             
             return [
@@ -100,11 +100,11 @@ class BorrowingFactory extends Factory
     public function returnedLate(): static
     {
         return $this->state(function (array $attributes) {
-            $borrowDate = fake()->dateTimeBetween('-3 months', '-1 month');
+            $borrowDate = fake('id_ID')->dateTimeBetween('-3 months', '-1 month');
             $dueDate = (clone $borrowDate)->modify('+14 days');
-            $daysLate = fake()->numberBetween(1, 14);
+            $daysLate = fake('id_ID')->numberBetween(1, 14);
             $returnedDate = (clone $dueDate)->modify("+{$daysLate} days");
-            $fineAmount = $daysLate * 1000; // Rp 1.000 per hari
+            $fineAmount = $daysLate * 5000; // Rp 5.000 per hari
             
             return [
                 'borrow_date' => $borrowDate,

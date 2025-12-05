@@ -47,19 +47,19 @@ class BookFactory extends Factory
             'Deepublish',
         ];
 
-        $stock = fake()->numberBetween(5, 50);
+        $stock = fake('id_ID')->numberBetween(5, 50);
 
         return [
-            'title' => fake()->sentence(fake()->numberBetween(2, 6)),
-            'author' => fake()->name(),
-            'isbn' => fake()->unique()->isbn13(),
-            'description' => fake()->paragraphs(2, true),
-            'category' => fake()->randomElement($categories),
-            'year' => fake()->numberBetween(1990, 2024),
-            'publisher' => fake()->randomElement($publishers),
+            'title' => fake('id_ID')->sentence(fake('id_ID')->numberBetween(2, 6)),
+            'author' => fake('id_ID')->name(),
+            'isbn' => fake('id_ID')->unique()->isbn13(),
+            'description' => fake('id_ID')->paragraphs(2, true),
+            'category' => fake('id_ID')->randomElement($categories),
+            'year' => fake('id_ID')->numberBetween(1990, 2024),
+            'publisher' => fake('id_ID')->randomElement($publishers),
             'stock' => $stock,
             'available_stock' => $stock,
-            'price' => fake()->numberBetween(25000, 250000),
+            'price' => fake('id_ID')->numberBetween(25000, 250000),
         ];
     }
 

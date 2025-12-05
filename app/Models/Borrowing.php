@@ -42,4 +42,9 @@ class Borrowing extends Model
     {
         return $this->belongsTo(Book::class);
     }
+
+    public function fine(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Fine::class);
+    }
 }
