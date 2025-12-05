@@ -22,15 +22,16 @@
     @endif
 
     <!-- Search and Filter -->
-    <div class="mb-6 bg-white dark:bg-slate-800 rounded-lg shadow-md p-6">
+    <div class="mb-6 bg-white/70 dark:bg-gray-800/80 backdrop-blur-md border border-white/20 dark:border-gray-700/50 rounded-2xl shadow-lg p-6">
         <form method="GET" action="{{ route('members.index') }}" class="flex gap-3">
             <input 
                 type="text" 
                 name="search" 
+                value="{{ request('search') }}"
                 placeholder="Cari nama atau email member..." 
-                class="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg dark:bg-slate-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-xl dark:bg-slate-700/50 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             />
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition duration-300">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-semibold transition duration-300 shadow-md">
                 Cari
             </button>
         </form>

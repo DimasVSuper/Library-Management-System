@@ -8,15 +8,33 @@ use App\Models\Member;
 use App\Models\Fine;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class BorrowingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $borrowings = Borrowing::with(['member', 'book'])->paginate(10);
+        $page = $request->get('page', 1);
+        $search = $request->get('search', '');
+
+        $borrowings = Cache::tags(['borrowings'])->remember("borrowings_index_page_{$page}_search_{$search}", 600, function () use ($request) {
+            $query = Borrowing::with(['member', 'book']);
+
+            if ($request->has('search')) {
+                $search = $request->search;
+                $query->whereHas('member', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })->orWhereHas('book', function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%");
+                });
+            }
+
+            return $query->latest()->paginate(10);
+        });
+
         return view('admin.borrowings.index', compact('borrowings'));
     }
 
@@ -70,6 +88,8 @@ class BorrowingController extends Controller
         // Decrease available stock
         $book->decrement('available_stock');
 
+        Cache::tags(['borrowings', 'books'])->flush();
+
         return redirect()->route('borrowings.index')->with('success', 'Peminjaman buku berhasil dicatat!');
     }
 
@@ -108,6 +128,8 @@ class BorrowingController extends Controller
 
         $borrowing->update($validated);
 
+        Cache::tags(['borrowings'])->flush();
+
         return redirect()->route('borrowings.index')->with('success', 'Data peminjaman berhasil diperbarui!');
     }
 
@@ -122,6 +144,7 @@ class BorrowingController extends Controller
         }
 
         $borrowing->delete();
+        Cache::tags(['borrowings', 'books'])->flush();
         return redirect()->route('borrowings.index')->with('success', 'Data peminjaman berhasil dihapus!');
     }
 
@@ -167,6 +190,8 @@ class BorrowingController extends Controller
 
         // Increase available stock
         $borrowing->book->increment('available_stock');
+
+        Cache::tags(['borrowings', 'books', 'fines'])->flush();
 
         return redirect()->route('borrowings.index')->with('success', 'Pengembalian buku berhasil dicatat!' . ($fine_amount > 0 ? ' (Denda: Rp ' . number_format($fine_amount, 0, ',', '.') . ')' : ''));
     }

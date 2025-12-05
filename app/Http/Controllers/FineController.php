@@ -4,12 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Fine;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class FineController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $fines = Fine::with(['borrowing.member', 'borrowing.book'])->latest()->paginate(10);
+        $page = $request->get('page', 1);
+        $search = $request->get('search', '');
+
+        $fines = Cache::tags(['fines'])->remember("fines_index_page_{$page}_search_{$search}", 600, function () use ($request) {
+            $query = Fine::with(['borrowing.member', 'borrowing.book']);
+
+            if ($request->has('search')) {
+                $search = $request->search;
+                $query->whereHas('borrowing', function ($q) use ($search) {
+                    $q->whereHas('member', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    })->orWhereHas('book', function ($q) use ($search) {
+                        $q->where('title', 'like', "%{$search}%");
+                    });
+                });
+            }
+
+            return $query->latest()->paginate(10);
+        });
+
         return view('admin.fines.index', compact('fines'));
     }
 
@@ -40,12 +60,15 @@ class FineController extends Controller
 
         $fine->update($validated);
 
+        Cache::tags(['fines'])->flush();
+
         return redirect()->route('fines.index')->with('success', 'Data denda berhasil diperbarui!');
     }
 
     public function destroy(Fine $fine)
     {
         $fine->delete();
+        Cache::tags(['fines'])->flush();
         return redirect()->route('fines.index')->with('success', 'Data denda berhasil dihapus!');
     }
     
@@ -59,6 +82,8 @@ class FineController extends Controller
             'status' => 'paid',
             'paid_at' => now(),
         ]);
+        
+        Cache::tags(['fines'])->flush();
         
         return back()->with('success', 'Pembayaran denda berhasil dicatat!');
     }

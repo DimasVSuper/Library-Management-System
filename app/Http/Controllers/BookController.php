@@ -4,15 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::paginate(10);
+        $page = $request->get('page', 1);
+        $search = $request->get('search', '');
+
+        $books = Cache::tags(['books'])->remember("books_index_page_{$page}_search_{$search}", 600, function () use ($request) {
+            $query = Book::query();
+
+            if ($request->has('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhere('author', 'like', "%{$search}%")
+                      ->orWhere('isbn', 'like', "%{$search}%");
+                });
+            }
+
+            return $query->paginate(10);
+        });
+
         return view('admin.books.index', compact('books'));
     }
 
@@ -43,6 +61,8 @@ class BookController extends Controller
 
         $validated['available_stock'] = $validated['stock'];
         Book::create($validated);
+
+        Cache::tags(['books'])->flush();
 
         return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan!');
     }
@@ -82,6 +102,8 @@ class BookController extends Controller
 
         $book->update($validated);
 
+        Cache::tags(['books'])->flush();
+
         return redirect()->route('books.index')->with('success', 'Buku berhasil diperbarui!');
     }
 
@@ -91,6 +113,7 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         $book->delete();
+        Cache::tags(['books'])->flush();
         return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus!');
     }
 }

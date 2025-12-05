@@ -27,6 +27,7 @@
             <input 
                 type="text" 
                 name="search" 
+                value="{{ request('search') }}"
                 placeholder="Cari judul atau pengarang..." 
                 class="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-xl dark:bg-slate-700/50 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             />

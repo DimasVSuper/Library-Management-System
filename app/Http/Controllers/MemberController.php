@@ -4,15 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class MemberController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $members = Member::paginate(10);
+        $page = $request->get('page', 1);
+        $search = $request->get('search', '');
+
+        $members = Cache::tags(['members'])->remember("members_index_page_{$page}_search_{$search}", 600, function () use ($request) {
+            $query = Member::query();
+
+            if ($request->has('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('phone', 'like', "%{$search}%");
+                });
+            }
+
+            return $query->paginate(10);
+        });
+
         return view('admin.members.index', compact('members'));
     }
 
@@ -41,6 +59,8 @@ class MemberController extends Controller
 
         $validated['join_date'] = now();
         Member::create($validated);
+
+        Cache::tags(['members'])->flush();
 
         return redirect()->route('members.index')->with('success', 'Member berhasil ditambahkan!');
     }
@@ -78,6 +98,8 @@ class MemberController extends Controller
 
         $member->update($validated);
 
+        Cache::tags(['members'])->flush();
+
         return redirect()->route('members.index')->with('success', 'Member berhasil diperbarui!');
     }
 
@@ -87,6 +109,7 @@ class MemberController extends Controller
     public function destroy(Member $member)
     {
         $member->delete();
+        Cache::tags(['members'])->flush();
         return redirect()->route('members.index')->with('success', 'Member berhasil dihapus!');
     }
 }
