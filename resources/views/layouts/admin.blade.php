@@ -24,11 +24,11 @@
         </div>
 
         <!-- Navbar -->
-        @include('partials.navbar')
+        @include('partials.admin.navbar')
 
         <div class="flex pt-16 md:pt-0">
             <!-- Sidebar -->
-            @include('partials.sidebar')
+            @include('partials.admin.sidebar')
 
             <!-- Main Content -->
             <main class="flex-1 p-4 md:p-8 w-full md:w-auto transition-all duration-300">
