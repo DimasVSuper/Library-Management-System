@@ -43,12 +43,13 @@ Sistem manajemen perpustakaan modern yang dibangun dengan **Laravel 12** dan **T
 | Komponen | Teknologi | Versi |
 |----------|-----------|-------|
 | **Framework** | Laravel | 12.0 |
-| **Database** | MySQL | 8.0+ |
+| **Database** | MySQL | 8.0+ DBngin / WSL Ubuntu |
 | **Frontend** | Blade Templates | - |
 | **Styling** | Tailwind CSS | 4.0 |
 | **Design** | Glassmorphism | - |
-| **Build Tool** | Vite | - |
-| **Cache** | Redis | (via Predis) |
+| **Build Tool** | Vite | 7.x |
+| **Cache** | Redis | DBngin / WSL Ubuntu |
+| **PHP Runtime** | PHP | 8.2+ |
 
 ---
 
